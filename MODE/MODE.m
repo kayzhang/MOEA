@@ -3,12 +3,12 @@ clear;
 close all;
 
 %% Problem Definition
-costFunctionType = 'ZDT4';	% Cost Function Type
+costFunctionType = 'ZDT3';	% Cost Function Type
 [nVar, nObj, nCons, varMin, varMax] = objectiveDescription(costFunctionType);
 varSize = [1 nVar];			% Size of Decision Variables Matrix
 
 %% Initialize all parameter of the algotithm
-maxIter = 250;		% Maxinum Number of Iterations
+maxIter = 1000;		% Maxinum Number of Iterations
 popSize = 100;		% Population Size
 
 F = 0.5;			% Scaling Factor
@@ -48,7 +48,7 @@ for n = 1:maxIter
 		+ F*(parent(rev(1, 2), :) - parent(rev(1,3), :));
 
 		for j = 1:nVar
-			if mutunt(i, j) < varMin(j)
+			if mutant(i, j) < varMin(j)
 				mutant(i, j) = varMin(j);
 			elseif mutant(i, j) > varMax(j)
 				mutant(i, j) = varMax(j);
@@ -73,8 +73,21 @@ for n = 1:maxIter
 
 	% C. Selection
 	for i = 1:popSize
-		if childCost(i, :) <= cost(i, :)
+		if ~(childCost(i, :) > cost(i, :))
 			parent(i, :) = child(i, :);
 			cost(i, :) = childCost(i, :);
 		end
 	end
+
+	% Plot the result
+	figure(1);
+	plot(cost(:, 1), cost(:, 2), 'r*');
+	xlabel('1^{st} Objective');
+	ylabel('2^{st} Objective');
+	grid on;
+	pause(0.01);
+
+	% Show Iteration Information
+	disp(['Iteration ' num2str(n)]);
+
+end
